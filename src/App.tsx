@@ -325,37 +325,6 @@ function MonthView({
                 </tbody>
               </table>
             </div>
-
-            {/* Legend */}
-            <div className="px-4 py-3 border-t border-gray-100 flex flex-wrap gap-x-6 gap-y-2">
-              {habits.map((habit) => (
-                <div key={habit.id} className="flex items-center gap-2 text-xs">
-                  <span className="text-gray-500 font-medium">{habit.name}:</span>
-                  <span className="flex items-center gap-1">
-                    <span
-                      className="inline-block w-3 h-3 rounded-sm border border-gray-200"
-                      title="Not logged"
-                    />
-                    <span className="text-gray-400">—</span>
-                  </span>
-                  {habit.levels.map((lv, i) => (
-                    <span key={lv.id} className="flex items-center gap-1">
-                      <span
-                        className="inline-block w-3 h-3 rounded-sm"
-                        style={{
-                          backgroundColor: getLevelColor(
-                            monthColor,
-                            i + 1,
-                            habit.levels.length
-                          ),
-                        }}
-                      />
-                      <span className="text-gray-500">{lv.label}</span>
-                    </span>
-                  ))}
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Add habit */}
