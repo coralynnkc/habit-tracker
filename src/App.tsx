@@ -147,7 +147,7 @@ export default function App() {
 
       {view === "month" ? (
         <MonthView
-          habits={habits}
+          habits={[...habits].sort((a, b) => a.name.localeCompare(b.name))}
           month={month}
           year={year}
           monthColor={monthColor}
@@ -158,7 +158,7 @@ export default function App() {
         />
       ) : (
         <TrackToday
-          habits={habits}
+          habits={[...habits].sort((a, b) => a.name.localeCompare(b.name))}
           monthColor={monthColor}
           onLog={logHabit}
           onDone={() => setView("month")}
@@ -510,7 +510,6 @@ function AddHabitModal({
   const [name, setName] = useState("");
   const [levels, setLevels] = useState<Level[]>([
     { id: uid(), label: "" },
-    { id: uid(), label: "" },
   ]);
 
   const canSubmit =
@@ -521,7 +520,7 @@ function AddHabitModal({
   }
 
   function removeLevel(id: string) {
-    if (levels.length > 2) setLevels((ls) => ls.filter((l) => l.id !== id));
+    if (levels.length > 1) setLevels((ls) => ls.filter((l) => l.id !== id));
   }
 
   function updateLevel(id: string, label: string) {
@@ -596,7 +595,7 @@ function AddHabitModal({
                     className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800 focus:outline-none focus:ring-2"
                     placeholder={PLACEHOLDERS[i]}
                   />
-                  {levels.length > 2 && (
+                  {levels.length > 1 && (
                     <button
                       onClick={() => removeLevel(lv.id)}
                       className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-300 hover:text-gray-500"
