@@ -71,6 +71,19 @@ function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
 }
 
+/** Returns a 0–10 score for a habit in a given month.
+ *  Each day contributes (level / totalLevels) * 10; unlogged days = 0. */
+function habitMonthScore(habit: Habit, year: number, month: number): number {
+  const days = getDaysInMonth(year, month);
+  let total = 0;
+  for (let d = 1; d <= days; d++) {
+    const key = dateKey(year, month, d);
+    const level = habit.logs[key] ?? 0;
+    total += (level / habit.levels.length) * 10;
+  }
+  return total / days;
+}
+
 function load(): Habit[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -245,11 +258,11 @@ function MonthView({
             <div className="overflow-x-auto">
               <table
                 className="border-collapse"
-                style={{ minWidth: `${180 + daysInMonth * 30}px` }}
+                style={{ minWidth: `${132 + daysInMonth * 30}px` }}
               >
                 <thead>
                   <tr>
-                    <th className="w-44 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                    <th className="w-32 px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider border-b border-gray-100">
                       habit
                     </th>
                     {days.map((d) => (
@@ -324,6 +337,56 @@ function MonthView({
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          {/* Monthly averages */}
+          <div className="mt-4 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="px-5 pt-4 pb-1 border-b border-gray-100">
+              <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Monthly averages
+              </h3>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {habits.map((habit) => {
+                const score = habitMonthScore(habit, year, month);
+                return (
+                  <div key={habit.id} className="flex items-center gap-3 px-5 py-3">
+                    <span className="text-sm text-gray-600 w-32 truncate shrink-0">{habit.name}</span>
+                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${score * 10}%`,
+                          backgroundColor: monthColor,
+                          opacity: 0.7 + score * 0.03,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-500 w-8 text-right tabular-nums">
+                      {score.toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })}
+              {/* Overall */}
+              {habits.length > 1 && (() => {
+                const overall = habits.reduce((sum, h) => sum + habitMonthScore(h, year, month), 0) / habits.length;
+                return (
+                  <div className="flex items-center gap-3 px-5 py-3 bg-gray-50">
+                    <span className="text-sm font-semibold text-gray-500 w-32 shrink-0">Overall</span>
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{ width: `${overall * 10}%`, backgroundColor: monthColor }}
+                      />
+                    </div>
+                    <span className="text-sm font-bold w-8 text-right tabular-nums" style={{ color: monthColor }}>
+                      {overall.toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
