@@ -76,12 +76,16 @@ function getDaysInMonth(year: number, month: number): number {
 function habitMonthScore(habit: Habit, year: number, month: number): number {
   const days = getDaysInMonth(year, month);
   let total = 0;
+  let tracked = 0;
   for (let d = 1; d <= days; d++) {
     const key = dateKey(year, month, d);
-    const level = habit.logs[key] ?? 0;
-    total += (level / habit.levels.length) * 10;
+    const level = habit.logs[key];
+    if (level !== undefined) {
+      total += (level / habit.levels.length) * 10;
+      tracked++;
+    }
   }
-  return total / days;
+  return tracked === 0 ? 0 : total / tracked;
 }
 
 function load(): Habit[] {
