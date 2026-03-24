@@ -213,7 +213,6 @@ function MonthView({
   const [hoveredHabit, setHoveredHabit] = useState<string | null>(null);
   const daysInMonth = getDaysInMonth(year, month);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const today = todayStr();
   const todayDay =
     new Date().getMonth() === month && new Date().getFullYear() === year
       ? new Date().getDate()
@@ -314,7 +313,6 @@ function MonthView({
                         const key = dateKey(year, month, d);
                         const level = habit.logs[key] ?? 0;
                         const bg = getLevelColor(monthColor, level, habit.levels.length);
-                        const isToday = key === today;
                         return (
                           <td key={d} className="p-0.5">
                             <button
@@ -327,9 +325,7 @@ function MonthView({
                               className="w-6 h-6 rounded-sm transition-all hover:scale-110 active:scale-95"
                               style={{
                                 backgroundColor: bg || "white",
-                                border: isToday
-                                  ? `2px solid ${monthColor}`
-                                  : bg
+                                border: bg
                                   ? "1px solid transparent"
                                   : "1px solid #E5E7EB",
                               }}
