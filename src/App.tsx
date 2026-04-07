@@ -75,7 +75,7 @@ function getDaysInMonth(year: number, month: number): number {
  *  Each day contributes (level / totalLevels) * 10; unlogged days = 0. */
 function habitMonthScore(habit: Habit, year: number, month: number): number {
   const today = new Date();
-  const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === month;
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
   const daysElapsed = isCurrentMonth ? today.getDate() : getDaysInMonth(year, month);
   let total = 0;
   for (let d = 1; d <= daysElapsed; d++) {
