@@ -74,18 +74,16 @@ function getDaysInMonth(year: number, month: number): number {
 /** Returns a 0–10 score for a habit in a given month.
  *  Each day contributes (level / totalLevels) * 10; unlogged days = 0. */
 function habitMonthScore(habit: Habit, year: number, month: number): number {
-  const days = getDaysInMonth(year, month);
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === month;
+  const daysElapsed = isCurrentMonth ? today.getDate() : getDaysInMonth(year, month);
   let total = 0;
-  let tracked = 0;
-  for (let d = 1; d <= days; d++) {
+  for (let d = 1; d <= daysElapsed; d++) {
     const key = dateKey(year, month, d);
-    const level = habit.logs[key];
-    if (level !== undefined) {
-      total += (level / habit.levels.length) * 10;
-      tracked++;
-    }
+    const level = habit.logs[key] ?? 0;
+    total += (level / habit.levels.length) * 10;
   }
-  return tracked === 0 ? 0 : total / tracked;
+  return total / daysElapsed;
 }
 
 function load(): Habit[] {
