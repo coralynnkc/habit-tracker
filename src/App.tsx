@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { Plus, ChevronLeft, ChevronRight, X, Trash2, CheckCheck } from "lucide-react";
+import {
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Trash2,
+  CheckCheck,
+} from "lucide-react";
 
 // --- Types ---
 type Level = { id: string; label: string };
@@ -19,12 +26,12 @@ const STORAGE_KEY = "bujo-habit-tracker.v1";
 // Predefined monochromatic palette per month (base color for ombre)
 const MONTH_COLORS: string[] = [
   "#5B8FB9", // Jan – icy blue
-  "#C96E85", // Feb – rose
+  "#FF69B4", // Feb – pink
   "#4DA876", // Mar – sage green
-  "#9775CA", // Apr – lavender
-  "#7CB83A", // May – lime
+  "#FFD700", // Apr - gold
+  "#9775CA", // May – lavender
   "#C9A030", // Jun – golden
-  "#D46848", // Jul – coral
+  "#E0115F", // Jul – ruby
   "#D49228", // Aug – amber
   "#B87848", // Sep – warm terra
   "#B85530", // Oct – burnt orange
@@ -33,8 +40,18 @@ const MONTH_COLORS: string[] = [
 ];
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 // --- Color utilities ---
@@ -47,7 +64,11 @@ function hexToRgb(hex: string): [number, number, number] {
 }
 
 /** Blend month color with white. Level 0 returns empty string (render as white). */
-function getLevelColor(monthHex: string, level: number, totalLevels: number): string {
+function getLevelColor(
+  monthHex: string,
+  level: number,
+  totalLevels: number,
+): string {
   if (level === 0) return "";
   const [r, g, b] = hexToRgb(monthHex);
   const alpha = level / totalLevels; // 0 < alpha ≤ 1
@@ -75,8 +96,11 @@ function getDaysInMonth(year: number, month: number): number {
  *  Each day contributes (level / totalLevels) * 10; unlogged days = 0. */
 function habitMonthScore(habit: Habit, year: number, month: number): number {
   const today = new Date();
-  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-  const daysElapsed = isCurrentMonth ? today.getDate() : getDaysInMonth(year, month);
+  const isCurrentMonth =
+    today.getFullYear() === year && today.getMonth() === month;
+  const daysElapsed = isCurrentMonth
+    ? today.getDate()
+    : getDaysInMonth(year, month);
   let total = 0;
   for (let d = 1; d <= daysElapsed; d++) {
     const key = dateKey(year, month, d);
@@ -120,8 +144,8 @@ export default function App() {
   function logHabit(habitId: string, date: string, level: number) {
     setHabits((hs) =>
       hs.map((h) =>
-        h.id === habitId ? { ...h, logs: { ...h.logs, [date]: level } } : h
-      )
+        h.id === habitId ? { ...h, logs: { ...h.logs, [date]: level } } : h,
+      ),
     );
   }
 
@@ -136,7 +160,10 @@ export default function App() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <h1 className="text-lg font-bold text-gray-800 tracking-tight" style={{ fontFamily: "Georgia, serif" }}>
+          <h1
+            className="text-lg font-bold text-gray-800 tracking-tight"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
             habit journal
           </h1>
           {view === "month" ? (
@@ -196,8 +223,14 @@ export default function App() {
 
 // --- Month View ---
 function MonthView({
-  habits, month, year, monthColor,
-  onShiftMonth, onDeleteHabit, onLogHabit, onAddHabit,
+  habits,
+  month,
+  year,
+  monthColor,
+  onShiftMonth,
+  onDeleteHabit,
+  onLogHabit,
+  onAddHabit,
 }: {
   habits: Habit[];
   month: number;
@@ -284,7 +317,11 @@ function MonthView({
                   {habits.map((habit, idx) => (
                     <tr
                       key={habit.id}
-                      className={idx < habits.length - 1 ? "border-b border-gray-100" : ""}
+                      className={
+                        idx < habits.length - 1
+                          ? "border-b border-gray-100"
+                          : ""
+                      }
                       onMouseEnter={() => setHoveredHabit(habit.id)}
                       onMouseLeave={() => setHoveredHabit(null)}
                     >
@@ -310,7 +347,11 @@ function MonthView({
                       {days.map((d) => {
                         const key = dateKey(year, month, d);
                         const level = habit.logs[key] ?? 0;
-                        const bg = getLevelColor(monthColor, level, habit.levels.length);
+                        const bg = getLevelColor(
+                          monthColor,
+                          level,
+                          habit.levels.length,
+                        );
                         return (
                           <td key={d} className="p-0.5">
                             <button
@@ -349,8 +390,13 @@ function MonthView({
               {habits.map((habit) => {
                 const score = habitMonthScore(habit, year, month);
                 return (
-                  <div key={habit.id} className="flex items-center gap-3 px-5 py-3">
-                    <span className="text-sm text-gray-600 w-32 truncate shrink-0">{habit.name}</span>
+                  <div
+                    key={habit.id}
+                    className="flex items-center gap-3 px-5 py-3"
+                  >
+                    <span className="text-sm text-gray-600 w-32 truncate shrink-0">
+                      {habit.name}
+                    </span>
                     <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full transition-all duration-500"
@@ -368,23 +414,36 @@ function MonthView({
                 );
               })}
               {/* Overall */}
-              {habits.length > 1 && (() => {
-                const overall = habits.reduce((sum, h) => sum + habitMonthScore(h, year, month), 0) / habits.length;
-                return (
-                  <div className="flex items-center gap-3 px-5 py-3 bg-gray-50">
-                    <span className="text-sm font-semibold text-gray-500 w-32 shrink-0">Overall</span>
-                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${overall * 10}%`, backgroundColor: monthColor }}
-                      />
+              {habits.length > 1 &&
+                (() => {
+                  const overall =
+                    habits.reduce(
+                      (sum, h) => sum + habitMonthScore(h, year, month),
+                      0,
+                    ) / habits.length;
+                  return (
+                    <div className="flex items-center gap-3 px-5 py-3 bg-gray-50">
+                      <span className="text-sm font-semibold text-gray-500 w-32 shrink-0">
+                        Overall
+                      </span>
+                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${overall * 10}%`,
+                            backgroundColor: monthColor,
+                          }}
+                        />
+                      </div>
+                      <span
+                        className="text-sm font-bold w-8 text-right tabular-nums"
+                        style={{ color: monthColor }}
+                      >
+                        {overall.toFixed(1)}
+                      </span>
                     </div>
-                    <span className="text-sm font-bold w-8 text-right tabular-nums" style={{ color: monthColor }}>
-                      {overall.toFixed(1)}
-                    </span>
-                  </div>
-                );
-              })()}
+                  );
+                })()}
             </div>
           </div>
 
@@ -405,7 +464,10 @@ function MonthView({
 
 // --- Track Today ---
 function TrackToday({
-  habits, monthColor, onLog, onDone,
+  habits,
+  monthColor,
+  onLog,
+  onDone,
 }: {
   habits: Habit[];
   monthColor: string;
@@ -438,7 +500,10 @@ function TrackToday({
         >
           <CheckCheck className="w-8 h-8" style={{ color: monthColor }} />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2" style={{ fontFamily: "Georgia, serif" }}>
+        <h2
+          className="text-2xl font-bold text-gray-800 mb-2"
+          style={{ fontFamily: "Georgia, serif" }}
+        >
           All done!
         </h2>
         <p className="text-gray-400 text-sm mb-8">
@@ -524,7 +589,8 @@ function TrackToday({
                   style={{
                     borderColor: isSelected ? monthColor : "#F3F4F6",
                     backgroundColor: isSelected
-                      ? getLevelColor(monthColor, lvl, habit.levels.length) + "30"
+                      ? getLevelColor(monthColor, lvl, habit.levels.length) +
+                        "30"
                       : "white",
                   }}
                 >
@@ -562,16 +628,16 @@ function TrackToday({
 
 // --- Add Habit Modal ---
 function AddHabitModal({
-  monthColor, onAdd, onClose,
+  monthColor,
+  onAdd,
+  onClose,
 }: {
   monthColor: string;
   onAdd: (name: string, levels: Level[]) => void;
   onClose: () => void;
 }) {
   const [name, setName] = useState("");
-  const [levels, setLevels] = useState<Level[]>([
-    { id: uid(), label: "" },
-  ]);
+  const [levels, setLevels] = useState<Level[]>([{ id: uid(), label: "" }]);
 
   const canSubmit =
     name.trim().length > 0 && levels.every((l) => l.label.trim().length > 0);
@@ -592,7 +658,7 @@ function AddHabitModal({
     if (!canSubmit) return;
     onAdd(
       name.trim(),
-      levels.map((l) => ({ ...l, label: l.label.trim() }))
+      levels.map((l) => ({ ...l, label: l.label.trim() })),
     );
   }
 
@@ -602,10 +668,16 @@ function AddHabitModal({
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm">
         {/* Modal header with color strip */}
-        <div className="h-1.5 rounded-t-2xl" style={{ backgroundColor: monthColor }} />
+        <div
+          className="h-1.5 rounded-t-2xl"
+          style={{ backgroundColor: monthColor }}
+        />
         <div className="px-6 pt-5 pb-6">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-gray-800" style={{ fontFamily: "Georgia, serif" }}>
+            <h2
+              className="text-lg font-bold text-gray-800"
+              style={{ fontFamily: "Georgia, serif" }}
+            >
               New habit
             </h2>
             <button
@@ -625,7 +697,9 @@ function AddHabitModal({
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && canSubmit && handleSubmit()}
+              onKeyDown={(e) =>
+                e.key === "Enter" && canSubmit && handleSubmit()
+              }
               className="w-full px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 text-gray-800 text-sm"
               placeholder="e.g. Exercise, Reading, Water"
             />
@@ -647,7 +721,11 @@ function AddHabitModal({
                   <span
                     className="w-5 h-5 rounded-sm shrink-0 border border-gray-100"
                     style={{
-                      backgroundColor: getLevelColor(monthColor, i + 1, levels.length),
+                      backgroundColor: getLevelColor(
+                        monthColor,
+                        i + 1,
+                        levels.length,
+                      ),
                     }}
                   />
                   <input
@@ -693,7 +771,11 @@ function AddHabitModal({
                   className="w-6 h-6 rounded-sm"
                   title={lv.label || `Level ${i + 1}`}
                   style={{
-                    backgroundColor: getLevelColor(monthColor, i + 1, levels.length),
+                    backgroundColor: getLevelColor(
+                      monthColor,
+                      i + 1,
+                      levels.length,
+                    ),
                   }}
                 />
               ))}
@@ -725,7 +807,8 @@ function AddHabitModal({
 
 // --- Empty State ---
 function EmptyState({
-  onAddHabit, monthColor,
+  onAddHabit,
+  monthColor,
 }: {
   onAddHabit: () => void;
   monthColor: string;
