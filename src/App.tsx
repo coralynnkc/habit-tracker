@@ -25,18 +25,18 @@ const STORAGE_KEY = "bujo-habit-tracker.v1";
 
 // Predefined monochromatic palette per month (base color for ombre)
 const MONTH_COLORS: string[] = [
-  "#5B8FB9", // Jan – icy blue
-  "#FF69B4", // Feb – pink
-  "#4DA876", // Mar – sage green
-  "#FFD700", // Apr - gold
-  "#9775CA", // May – lavender
-  "#C9A030", // Jun – golden
-  "#E0115F", // Jul – ruby
-  "#D49228", // Aug – amber
-  "#B87848", // Sep – warm terra
-  "#B85530", // Oct – burnt orange
-  "#A03550", // Nov – crimson
-  "#4A688A", // Dec – winter blue
+  "#7EC8E3", // Jan – icy blue
+  "#D4607A", // Feb – valentines pink
+  "#4A9B6F", // Mar – clover green
+  "#9B7FD4", // Apr – lavender purple
+  "#E8C832", // May – golden yellow
+  "#6A35B0", // Jun – royal purple
+  "#C02040", // Jul – ruby red
+  "#E08820", // Aug – yellow orange
+  "#8B2040", // Sep – burgundy red
+  "#D06020", // Oct – pumpkin orange
+  "#A05530", // Nov – orange-brown
+  "#2855A8", // Dec – sapphire blue
 ];
 
 const MONTH_NAMES = [
